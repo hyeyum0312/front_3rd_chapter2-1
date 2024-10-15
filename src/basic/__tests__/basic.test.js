@@ -1,58 +1,66 @@
-import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
-describe('basic test', () => {
-
+describe("basic test", () => {
   describe.each([
-    { type: 'origin', loadFile: () => import('../../main.js'), },
-    { type: 'basic', loadFile: () => import('../main.basic.js'), },
-  ])('$type 장바구니 시나리오 테스트', ({ loadFile }) => {
+    { type: "origin", loadFile: () => import("../../main.js") },
+    { type: "basic", loadFile: () => import("../main.basic.js") },
+  ])("$type 장바구니 시나리오 테스트", ({ loadFile }) => {
     let sel, addBtn, cartDisp, sum, stockInfo;
 
     beforeAll(async () => {
       // DOM 초기화
-      document.body.innerHTML='<div id="app"></div>';
+      document.body.innerHTML = '<div id="app"></div>';
       await loadFile();
 
       // 전역 변수 참조
-      sel=document.getElementById('product-select');
-      addBtn=document.getElementById('add-to-cart');
-      cartDisp=document.getElementById('cart-items');
-      sum=document.getElementById('cart-total');
-      stockInfo=document.getElementById('stock-status');
+      sel = document.getElementById("product-select");
+      addBtn = document.getElementById("add-to-cart");
+      cartDisp = document.getElementById("cart-items");
+      sum = document.getElementById("cart-total");
+      stockInfo = document.getElementById("stock-status");
     });
 
     beforeEach(() => {
       vi.useFakeTimers();
-      vi.spyOn(window, 'alert').mockImplementation(() => {});
+      vi.spyOn(window, "alert").mockImplementation(() => {});
     });
 
     afterEach(() => {
       vi.restoreAllMocks();
+      vi.clearAllTimers();
     });
 
-    it('초기 상태: 상품 목록이 올바르게 그려졌는지 확인', () => {
+    it("초기 상태: 상품 목록이 올바르게 그려졌는지 확인", () => {
       expect(sel).toBeDefined();
-      expect(sel.tagName.toLowerCase()).toBe('select');
+      expect(sel.tagName.toLowerCase()).toBe("select");
       expect(sel.children.length).toBe(5);
 
       // 첫 번째 상품 확인
-      expect(sel.children[0].value).toBe('p1');
-      expect(sel.children[0].textContent).toBe('상품1 - 10000원');
+      expect(sel.children[0].value).toBe("p1");
+      expect(sel.children[0].textContent).toBe("상품1 - 10000원");
       expect(sel.children[0].disabled).toBe(false);
 
       // 마지막 상품 확인
-      expect(sel.children[4].value).toBe('p5');
-      expect(sel.children[4].textContent).toBe('상품5 - 25000원');
+      expect(sel.children[4].value).toBe("p5");
+      expect(sel.children[4].textContent).toBe("상품5 - 25000원");
       expect(sel.children[4].disabled).toBe(false);
 
       // 재고 없는 상품 확인 (상품4)
-      expect(sel.children[3].value).toBe('p4');
-      expect(sel.children[3].textContent).toBe('상품4 - 15000원');
+      expect(sel.children[3].value).toBe("p4");
+      expect(sel.children[3].textContent).toBe("상품4 - 15000원");
       expect(sel.children[3].disabled).toBe(true);
     });
 
-    it('초기 상태: DOM 요소가 올바르게 생성되었는지 확인', () => {
-      expect(document.querySelector('h1').textContent).toBe('장바구니');
+    it("초기 상태: DOM 요소가 올바르게 생성되었는지 확인", () => {
+      expect(document.querySelector("h1").textContent).toBe("장바구니");
       expect(sel).toBeDefined();
       expect(addBtn).toBeDefined();
       expect(cartDisp).toBeDefined();

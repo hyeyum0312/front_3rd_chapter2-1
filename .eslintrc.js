@@ -3,12 +3,16 @@ export default {
   env: {
     browser: true,
     es2021: true,
-    node: true, // Node.js 환경 추가
   },
   parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
     ecmaVersion: 12,
     sourceType: "module",
   },
+  plugins: ["react"],
+
   extends: ["eslint:recommended", "prettier", "plugin:prettier/recommended"],
   rules: {
     indent: ["error", 2],

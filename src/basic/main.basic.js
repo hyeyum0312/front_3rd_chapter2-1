@@ -12,7 +12,7 @@ let itemCount = 0;
 
 const createSelectOption = (item) => {
   let optionValue = item.id;
-  let textContent = `${item.name} - ${item.val}원`;
+  let textContent = `${item.name} - ${item.price}원`;
   let $option = createElement("option", { value: optionValue, textContent: textContent });
 
   if (item.quantity === 0) {
@@ -106,7 +106,7 @@ const newCartItem = (selectedProduct) => {
   let newItem = createElement("div", { id: `${selectedProduct.id}`, className: "flex justify-between items-center mb-2" });
 
   const html = `
-    <span>${selectedProduct.name} - ${selectedProduct.val}원 x 1</span>
+    <span>${selectedProduct.name} - ${selectedProduct.price}원 x 1</span>
     <div>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${selectedProduct.id}" data-change="-1"> - </button>
       <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${selectedProduct.id}" data-change="1"> + </button>
@@ -121,11 +121,11 @@ const newCartItem = (selectedProduct) => {
 
 function main() {
   productList = [
-    { id: "p1", name: "상품1", val: 10000, quantity: 50 },
-    { id: "p2", name: "상품2", val: 20000, quantity: 30 },
-    { id: "p3", name: "상품3", val: 30000, quantity: 20 },
-    { id: "p4", name: "상품4", val: 15000, quantity: 0 },
-    { id: "p5", name: "상품5", val: 25000, quantity: 10 },
+    { id: "p1", name: "상품1", price: 10000, quantity: 50 },
+    { id: "p2", name: "상품2", price: 20000, quantity: 30 },
+    { id: "p3", name: "상품3", price: 30000, quantity: 20 },
+    { id: "p4", name: "상품4", price: 15000, quantity: 0 },
+    { id: "p5", name: "상품5", price: 25000, quantity: 10 },
   ];
 
   renderUI();
@@ -196,7 +196,7 @@ const notifyFlashSale = () => {
       let luckyItem = productList[Math.floor(Math.random() * productList.length)];
 
       if (Math.random() < 0.3 && luckyItem.quantity > 0) {
-        luckyItem.val = Math.round(luckyItem.val * 0.8);
+        luckyItem.price = Math.round(luckyItem.price * 0.8);
         alert("번개세일! " + luckyItem.name + "이(가) 20% 할인 중입니다!");
 
         updateSelOpts();
@@ -214,7 +214,7 @@ const notifySuggestedSale = () => {
 
         if (suggest) {
           alert(suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!");
-          suggest.val = Math.round(suggest.val * 0.95);
+          suggest.price = Math.round(suggest.price * 0.95);
           updateSelOpts();
         }
       }
@@ -258,7 +258,7 @@ function calcTotalAmount() {
   for (let i = 0; i < $cartItems.length; i++) {
     let currenProductId = productList.find((item) => item.id === $cartItems[i].id);
     let quantity = parseInt($cartItems[i].querySelector("span").textContent.split("x ")[1]);
-    let itemTot = currenProductId.val * quantity;
+    let itemTot = currenProductId.price * quantity;
     let discountRate = 0;
 
     itemCount += quantity;

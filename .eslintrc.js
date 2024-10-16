@@ -35,6 +35,7 @@ export default {
     ],
     "prefer-arrow-callback": "error", // 콜백 함수에서 화살표 함수를 사용하도록 강제,
     "func-style": ["error", "expression"], // 함수 표현식을 강제
+    "prettier/prettier": ["error", { printWidth: 200 }],
   },
   ignorePatterns: ["node_modules/", "dist/", "build/*", "*.test.js"],
   overrides: [],

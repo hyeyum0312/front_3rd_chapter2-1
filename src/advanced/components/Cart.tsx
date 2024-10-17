@@ -3,28 +3,67 @@ import { CartSelectList } from "./CartSelectList";
 import { CartSummary } from "./CartSummary";
 import { productList } from "./data/productList";
 import { ProductList } from "../types/product";
-import { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { calculateTotalPrice, updateQuantity } from "../service/cartService";
 
-export const Cart = () => {
+export const Cart = React.memo(() => {
   const [cartItem, setCartItem] = useState<ProductList[]>([]);
   const lowStockItems: ProductList[] = productList.filter((item) => item.quantity < 5);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [itemCount, setItemCount] = useState(0);
+
+  useEffect(() => {
+    const { cartTotalPrice, totalAmount } = calculateTotalPrice(cartItem);
+    setTotalAmount(totalAmount);
+  }, [cartItem]); // cartItem이 변경될 때마다 실행됨
 
   const handleAddCart = () => {
-    const selectedProduct: ProductList[] = productList.filter((item) => item.id === selectedProductId);
-    console.log("selectedProduct", selectedProduct);
+    const selectedProduct = productList.find((item) => item.id === selectedProductId);
 
-    // cartItem에 선택된 상품 추가
-    setCartItem((prevItems) => [...prevItems, ...selectedProduct]);
+    if (!selectedProduct || !selectedProductId) {
+      console.error("선택된 상품이 없습니다.");
+      return;
+    }
+
+    const existingProduct = cartItem.find((item) => item.id === selectedProductId);
+
+    if (existingProduct) {
+      const saleQuantity = selectedProduct.quantity; // 판매 가능한 수량
+      const currentQuantity = existingProduct.quantity; // 카트에 담긴 수량
+
+      if (saleQuantity <= currentQuantity) {
+        alert("재고가 부족합니다.");
+        return;
+      }
+
+      setCartItem((prevItems) => updateQuantity(prevItems, selectedProductId, 1));
+    } else {
+      const newProduct = { ...selectedProduct, quantity: 1 }; // 새 객체 생성
+      setCartItem((prevItems) => [...prevItems, newProduct]);
+    }
+
+    const { totalAmount, itemCount } = calculateTotalPrice(cartItem);
+    setTotalAmount(totalAmount);
+    setItemCount(itemCount);
   };
+
+  const handleQuantityChange = useCallback((id: string, quantity: number) => {
+    setCartItem((prevItems) => {
+      if (quantity === 0) {
+        return prevItems.filter((item) => item.id !== id); // 아이템 제거
+      }
+      return prevItems.map((item) => (item.id === id ? { ...item, quantity } : item));
+    });
+  }, []);
 
   return (
     <div className="bg-gray-100 p-8">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
-        <CartItem items={cartItem} />
+        <CartItem items={cartItem} onQuantityChange={handleQuantityChange} />
 
-        <CartSummary />
+        <CartSummary totalAmount={totalAmount} itemCount={itemCount} />
 
         <CartSelectList onSelectChange={(id) => setSelectedProductId(id)} />
 
@@ -44,4 +83,4 @@ export const Cart = () => {
       </div>
     </div>
   );
-};
+});

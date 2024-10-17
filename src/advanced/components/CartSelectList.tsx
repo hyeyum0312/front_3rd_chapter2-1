@@ -1,12 +1,17 @@
 import { productList } from "./data/productList";
 import { ProductList } from "../types/product";
 
-export const CartSelectList = () => {
+interface CartSelectListProps {
+  onSelectChange: (id: string) => void; // 상품 선택 시 호출할 함수
+}
+
+export const CartSelectList = ({ onSelectChange }: CartSelectListProps) => {
   return (
-    <select className="border rounded p-2 mr-2" id="product-select">
-      {productList.map(({ id, name, price, quantity }: ProductList) => (
-        <option key={id} value={id} disabled={quantity === 0}>
-          {name} - {price}
+    <select onChange={(e) => onSelectChange(e.target.value)} className="border p-2 rounded">
+      <option value="">상품 선택</option>
+      {productList.map((product) => (
+        <option key={product.id} value={product.id}>
+          {product.name}
         </option>
       ))}
     </select>

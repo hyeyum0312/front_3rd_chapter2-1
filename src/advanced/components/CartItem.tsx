@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ProductList } from "../types/product";
-import { updateQuantity } from "../service/cartService";
 
 interface CartItemProps {
   items: ProductList[]; // items prop 추가

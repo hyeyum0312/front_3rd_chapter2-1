@@ -10,12 +10,15 @@ export const Cart = React.memo(() => {
   const [cartItem, setCartItem] = useState<ProductList[]>([]);
   const lowStockItems: ProductList[] = productList.filter((item) => item.quantity < 5);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [finalTotalPrice, setFinalTotalPrice] = useState<number>(0);
   const [itemCount, setItemCount] = useState(0);
+  const [preDiscountTotalPrice, setPreDiscountTotalPrice] = useState(0);
 
   useEffect(() => {
-    const { cartTotalPrice, totalAmount } = calculateTotalPrice(cartItem);
-    setTotalAmount(totalAmount);
+    const { preDiscountTotalPrice, finalTotalPrice, itemCount } = calculateTotalPrice(cartItem);
+    setFinalTotalPrice(finalTotalPrice);
+    setItemCount(itemCount);
+    setPreDiscountTotalPrice(preDiscountTotalPrice);
   }, [cartItem]); // cartItem이 변경될 때마다 실행됨
 
   const handleAddCart = () => {
@@ -42,10 +45,6 @@ export const Cart = React.memo(() => {
       const newProduct = { ...selectedProduct, quantity: 1 }; // 새 객체 생성
       setCartItem((prevItems) => [...prevItems, newProduct]);
     }
-
-    const { totalAmount, itemCount } = calculateTotalPrice(cartItem);
-    setTotalAmount(totalAmount);
-    setItemCount(itemCount);
   };
 
   const handleQuantityChange = useCallback((id: string, quantity: number) => {
@@ -63,7 +62,7 @@ export const Cart = React.memo(() => {
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
         <CartItem items={cartItem} onQuantityChange={handleQuantityChange} />
 
-        <CartSummary totalAmount={totalAmount} itemCount={itemCount} />
+        <CartSummary finalTotalPrice={finalTotalPrice} itemCount={itemCount} preDiscountTotalPrice={preDiscountTotalPrice} />
 
         <CartSelectList onSelectChange={(id) => setSelectedProductId(id)} />
 

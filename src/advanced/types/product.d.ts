@@ -4,3 +4,9 @@ export interface ProductList {
   price: number;
   quantity: number;
 }
+
+export interface CartSummaryProps {
+  finalTotalPrice: number;
+  itemCount: number;
+  preDiscountTotalPrice: number;
+}

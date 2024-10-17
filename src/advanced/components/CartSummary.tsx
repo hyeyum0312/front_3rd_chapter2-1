@@ -1,36 +1,33 @@
 import { useEffect, useState } from "react";
-import { ProductList } from "../types/product";
-import { productList } from "./data/productList";
-// import { calculateDiscountRate } from "../service/cartService";
+import { CartSummaryProps, ProductList } from "../types/product";
+import { calculateDiscountRate } from "../service/cartService";
 
-interface CartSummaryProps {
-  totalAmount: number;
-  itemCount: number;
-}
-
-export const CartSummary = ({ totalAmount, itemCount }: CartSummaryProps) => {
-  console.log("totalAmount", totalAmount);
-
+export const CartSummary = ({ finalTotalPrice, itemCount, preDiscountTotalPrice }: CartSummaryProps) => {
   const [discountRate, setDiscountRate] = useState(0);
-  const [infoMessage, setInfoMessage] = useState("");
   const [point, setPoint] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [discountedTotalPrice, setDiscountedTotalPrice] = useState(0);
 
   useEffect(() => {
-    setTotalPrice(totalAmount);
-    let bonusPoint = 0;
-    bonusPoint += Math.floor(totalAmount / 1000);
+    let bonusPoint = Math.floor(finalTotalPrice / 1000);
     setPoint(bonusPoint);
 
-    // let discountRate = calculateDiscountRate(totalAmount);
-  }, [totalAmount]);
+    const calculateDiscountProps: CartSummaryProps = {
+      preDiscountTotalPrice,
+      finalTotalPrice,
+      itemCount,
+    };
 
-  console.log("itemCount", itemCount);
+    const discountRate = calculateDiscountRate(calculateDiscountProps);
+    setDiscountRate(discountRate);
+
+    // 할인율 적용하여 최종 가격 계산
+    const totalAfterDiscount = preDiscountTotalPrice * (1 - discountRate);
+    setDiscountedTotalPrice(totalAfterDiscount);
+  }, [finalTotalPrice, itemCount]);
 
   return (
     <div className="text-xl font-bold my-4" id="cart-total">
-      총액:
-      {totalAmount}원{discountRate > 0 ? <span className="text-green-500 ml-2">({(discountRate * 100).toFixed(1)} %할인 적용)</span> : ""}
+      총액: {discountedTotalPrice.toLocaleString()}원{discountRate > 0 ? <span className="text-green-500 ml-2">({(discountRate * 100).toFixed(1)}% 할인 적용)</span> : ""}
       <span id="loyalty-points" className="text-blue-500 ml-2">
         (포인트: {point})
       </span>

@@ -1,4 +1,4 @@
-import { ProductList } from "../types/product";
+import { CartSummaryProps, ProductList } from "../types/product";
 
 export const updateQuantity = (items: ProductList[], productId: string, quantityToAdd: number) => {
   return items.map((item) => (item.id === productId ? { ...item, quantity: item.quantity + quantityToAdd } : item));
@@ -15,8 +15,8 @@ export const calculateTotalPrice = (cartItems: ProductList[]) => {
     { currentItemId: "p5", discountRate: 0.25 },
   ];
 
-  let cartTotalPrice = 0;
-  let totalAmount = 0;
+  let preDiscountTotalPrice = 0;
+  let finalTotalPrice = 0;
   let itemCount = 0;
 
   for (const item of cartItems) {
@@ -25,7 +25,7 @@ export const calculateTotalPrice = (cartItems: ProductList[]) => {
     let discountRate = 0;
 
     itemCount += quantity;
-    cartTotalPrice += itemTot;
+    preDiscountTotalPrice += itemTot;
 
     if (quantity >= 10) {
       const discountItem = discountMenual.find((discount) => discount.currentItemId === item.id);
@@ -34,31 +34,28 @@ export const calculateTotalPrice = (cartItems: ProductList[]) => {
       }
     }
 
-    totalAmount += itemTot * (1 - discountRate);
+    finalTotalPrice += itemTot * (1 - discountRate);
   }
 
-  return { cartTotalPrice, totalAmount, itemCount };
+  return { preDiscountTotalPrice, finalTotalPrice, itemCount };
 };
 
-// export const calculateDiscountRate = (cartTotalPrice) => {
-//   let discountRate = 0;
+export const calculateDiscountRate = ({ preDiscountTotalPrice, finalTotalPrice, itemCount }: CartSummaryProps) => {
+  const BULK_MIN_COUNT = 10;
+  const BULK_DISCOUNT_RATE = 0.1;
+  const WEEKDAY_DISCOUNT_RATE = 0.05;
 
-//   if (itemCount >= BULK_MIN_COUNT) {
-//     let bulkDiscount = totalAmount * BULK_DISCOUNT_RATE;
-//     let itemDiscount = cartTotalPrice - totalAmount;
+  let discountRate = 0;
 
-//     if (bulkDiscount > itemDiscount) {
-//       totalAmount = cartTotalPrice * (1 - BULK_DISCOUNT_RATE);
-//       discountRate = BULK_DISCOUNT_RATE;
-//     }
-//   } else {
-//     discountRate = (cartTotalPrice - totalAmount) / cartTotalPrice;
-//   }
+  // 대량 구매 할인 적용
+  if (itemCount >= BULK_MIN_COUNT) {
+    discountRate = BULK_DISCOUNT_RATE;
+  }
 
-//   if (new Date().getDay() === 2) {
-//     totalAmount *= 1 - WEEKDAY_DISCOUNT_RATE;
-//     discountRate = Math.max(discountRate, WEEKDAY_DISCOUNT_RATE);
-//   }
+  // 화요일 추가 할인 적용
+  if (new Date().getDay() === 2) {
+    discountRate = Math.max(discountRate, WEEKDAY_DISCOUNT_RATE);
+  }
 
-//   return discountRate;
-// };
+  return discountRate;
+};

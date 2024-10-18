@@ -62,7 +62,7 @@ export const Cart = React.memo(() => {
         <h1 className="text-2xl font-bold mb-4">장바구니</h1>
         <CartItem items={cartItem} onQuantityChange={handleQuantityChange} />
 
-        <CartSummary finalTotalPrice={finalTotalPrice} itemCount={itemCount} preDiscountTotalPrice={preDiscountTotalPrice} />
+        <CartSummary cartItem={cartItem} finalTotalPrice={finalTotalPrice} itemCount={itemCount} preDiscountTotalPrice={preDiscountTotalPrice} />
 
         <CartSelectList onSelectChange={(id) => setSelectedProductId(id)} />
 

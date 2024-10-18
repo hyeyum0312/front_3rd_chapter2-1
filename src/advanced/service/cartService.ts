@@ -59,3 +59,9 @@ export const calculateDiscountRate = ({ preDiscountTotalPrice, finalTotalPrice, 
 
   return discountRate;
 };
+
+export const deleteCartItem = (deleteId: string, cartList: ProductList[]) => {
+  const filtedList = cartList.filter((item) => item.id !== deleteId);
+
+  return filtedList;
+};

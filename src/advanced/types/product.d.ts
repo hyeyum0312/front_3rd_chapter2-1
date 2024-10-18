@@ -6,6 +6,7 @@ export interface ProductList {
 }
 
 export interface CartSummaryProps {
+  cartItem?: ProductList[];
   finalTotalPrice: number;
   itemCount: number;
   preDiscountTotalPrice: number;

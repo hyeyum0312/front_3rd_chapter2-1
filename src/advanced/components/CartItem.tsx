@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProductList } from "../types/product";
+import { deleteCartItem } from "../service/cartService";
 
 interface CartItemProps {
   items: ProductList[]; // items prop 추가
@@ -41,6 +42,11 @@ export const CartItem = ({ items, onQuantityChange }: CartItemProps) => {
     onQuantityChange(updateId, newSelectedQuantity);
   };
 
+  const handlerDeleteCartItem = (deleteId: string) => {
+    setItemList(deleteCartItem(deleteId, itemList));
+    onQuantityChange(deleteId, 0);
+  };
+
   return (
     <div id="cart-items">
       {itemList.length > 0
@@ -56,7 +62,7 @@ export const CartItem = ({ items, onQuantityChange }: CartItemProps) => {
                 <button className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id={id} data-change="1" onClick={() => updateCartItem(id, 1)}>
                   +
                 </button>
-                <button className="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id={id}>
+                <button className="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id={id} onClick={() => handlerDeleteCartItem(id)}>
                   삭제
                 </button>
               </div>

@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { CartSummaryProps, ProductList } from "../types/product";
 import { calculateDiscountRate } from "../service/cartService";
 
-export const CartSummary = ({ finalTotalPrice, itemCount, preDiscountTotalPrice }: CartSummaryProps) => {
+export const CartSummary = ({ cartItem, finalTotalPrice, itemCount, preDiscountTotalPrice }: CartSummaryProps) => {
   const [discountRate, setDiscountRate] = useState(0);
   const [point, setPoint] = useState(0);
   const [discountedTotalPrice, setDiscountedTotalPrice] = useState(0);
 
   useEffect(() => {
+    console.log("변경됨");
+
+    let totalAfterDiscount = 0;
     let bonusPoint = Math.floor(finalTotalPrice / 1000);
     setPoint(bonusPoint);
 
@@ -21,9 +24,12 @@ export const CartSummary = ({ finalTotalPrice, itemCount, preDiscountTotalPrice 
     setDiscountRate(discountRate);
 
     // 할인율 적용하여 최종 가격 계산
-    const totalAfterDiscount = preDiscountTotalPrice * (1 - discountRate);
+    if (cartItem?.length) {
+      totalAfterDiscount = preDiscountTotalPrice * (1 - discountRate);
+    }
+
     setDiscountedTotalPrice(totalAfterDiscount);
-  }, [finalTotalPrice, itemCount]);
+  }, [finalTotalPrice, itemCount, cartItem]);
 
   return (
     <div className="text-xl font-bold my-4" id="cart-total">

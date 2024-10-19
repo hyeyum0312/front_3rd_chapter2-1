@@ -6,12 +6,5 @@ interface CartContextType {
   setLastStockItem: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-// Context 생성
-const CartContext = createContext<CartContextType | null>(null);
-
-// Context Provider 컴포넌트
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [lastStockItem, setLastStockItem] = useState<string | null>(null);
-
-  return <CartContext.Provider value={{ lastStockItem, setLastStockItem }}>{children}</CartContext.Provider>;
-};
+// Context 생성 (기본값은 {}로 설정)
+export const CartContext = createContext<CartContextType | null>(null);

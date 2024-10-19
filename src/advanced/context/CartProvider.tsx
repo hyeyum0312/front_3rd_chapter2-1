@@ -1,13 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-
-// Context의 타입 정의
-interface CartContextType {
-  lastStockItem: string | null;
-  setLastStockItem: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-// Context 생성 (기본값은 {}로 설정)
-const CartContext = createContext<CartContextType | null>(null);
+import React, { useContext, useState, ReactNode } from "react";
+import { CartContext } from "./CartContext";
 
 // Context Provider 컴포넌트
 export const CartProvider = ({ children }: { children: ReactNode }) => {

@@ -11,3 +11,9 @@ export interface CartSummaryProps {
   itemCount: number;
   preDiscountTotalPrice: number;
 }
+
+export interface Accumulator {
+  itemCount: number;
+  preDiscountTotalPrice: number;
+  finalTotalPrice: number;
+}

@@ -1,6 +1,7 @@
 import React from "react";
 import { Cart } from "./components/Cart";
-import { CartProvider } from "./context/CartContext";
+import { CartContext } from "./context/CartContext";
+import { CartProvider } from "./context/CartProvider";
 
 const App: React.FC = () => {
   return (
